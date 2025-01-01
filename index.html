@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<link href='https://fonts.googleapis.com/css?family=Aclonica' rel='stylesheet'>
+<link href="https://fonts.googleapis.com/css?family=Sofia&effect=fire" rel="stylesheet">
+
+<link href='css/style.css' rel='stylesheet'>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+// GSAP Zoom-Out Animation Hook
+const useZoomOutAnimation = (ref) => {
+  useEffect(() => {
+    if (ref.current) {
+      gsap.from(ref.current, {
+        scale: 0.8,
+        opacity: 0,
+        duration: 1,
+        ease: "power3.out",
+      });
+    }
+  }, [ref]);
+};
+
+const Slideshow = () => {
+  const images = [
+    "slideshow/simg1.jpg",
+    "slideshow/simg2.jpg",
+    "slideshow/simg3.jpg",
+    "slideshow/simg4.jpg",
+    "slideshow/simg5.jpg",
+    "slideshow/simg6.jpg",
+  ];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [images.length]);
+
+  return (
+    <div id="gallery" className="slideshow">
+      <img
+        src={images[currentIndex]}
+        alt={`Slide ${currentIndex + 1}`}
+        className="slide"
+      />
+    </div>
+  );
+};
+
+const Navbar = () => {
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navRef = React.useRef(null);
+
+  useZoomOutAnimation(navRef);
+
+  const toggleMenu = () => {
+    setMobileMenuOpen(!isMobileMenuOpen);
+    document.querySelector('.hamburger').classList.toggle('active');
+  };
+
+  return (
+    <nav className="navbar" ref={navRef}>
+      <div className="logo-container">
+        <img 
+          src="img/logo.png" 
+          alt="EventX Logo" 
+          className="logo" 
+        />
+        <h1 className="font-effect-fire">EventNth</h1>
+      </div>
+      <div className="hamburger" onClick={toggleMenu}>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <ul className={`nav-links ${isMobileMenuOpen ? "" : "open"}`}>
+        <li>
+          <a href="#home" onClick={() => setMobileMenuOpen(false)}>
+            Home
+          </a>
+        </li>
+        <li>
+          <a href="#about" onClick={() => setMobileMenuOpen(false)}>
+            About
+          </a>
+        </li>
+        <li>
+          <a href="#register" onClick={() => setMobileMenuOpen(false)}>
+            Register
+          </a>
+        </li>
+      </ul>
+    </nav>
+  );
+};
+
+const Home = () => {
+  const homeRef = React.useRef(null);
+
+  useZoomOutAnimation(homeRef);
+
+  return (
+    <div id="home" className="home" ref={homeRef}>
+      <h2 className="font-effect-fire">Welcome to EventNth!</h2>
+      <p>Join us for an unforgettable experience full of inspiration and networking.</p>
+    </div>
+  );
+};
+
+const About = () => {
+  const aboutRef = React.useRef(null);
+
+  useZoomOutAnimation(aboutRef);
+
+  return (
+    <div id="about" className="about" ref={aboutRef}>
+      <h2 className="font-effect-fire">About the Event</h2>
+      <p>
+        EventX is an annual event that brings together leaders, innovators, and enthusiasts 
+        from various industries to share ideas and grow together.
+      </p>
+      <p>Date: January 15, 2025</p>
+      <p>Location: New York City</p>
+    </div>
+  );
+};
+
+const RegistrationForm = () => {
+  const registerRef = React.useRef(null);
+
+  useZoomOutAnimation(registerRef);
+
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert(`Thank you for registering, ${formData.name}!`);
+  };
+
+  return (
+    <div id="register" className="register" ref={registerRef}>
+      <h2 className="font-effect-fire">Register Now</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          name="name"
+          placeholder="Your Name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Your Email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="tel"
+          name="phone"
+          placeholder="Your Phone Number"
+          value={formData.phone}
+          onChange={handleChange}
+          required
+        />
+        <button className="font-effect-fire" type="submit">Submit</button>
+      </form>
+    </div>
+  );
+};
+
+const Footer = () => {
+  const footerRef = React.useRef(null);
+
+  useZoomOutAnimation(footerRef);
+
+  return (
+    <footer className="footer" ref={footerRef}>
+      <p>&copy; 2024 EventX. All rights reserved.</p>
+    </footer>
+  );
+};
+
+const App = () => (
+  <div className="App">
+    <Navbar />
+    <Slideshow />
+    <Home />
+    <About />
+    <RegistrationForm />
+    <Footer />
+  </div>
+);
+
+ReactDOM.render(<App />, document.getElementById("root"));
+</script>
+</body>
+</html>
